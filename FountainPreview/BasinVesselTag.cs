@@ -50,6 +50,7 @@ namespace FountainPreview
             if (Target is null) return;
             if (parent is ILocalHintLocation ilhl && !ilhl.GetItemHintActive()) return;
             if (parent.HasTag<ItemChanger.Tags.DisableItemPreviewTag>()) return;
+            if (parent.Placement?.HasTag<ItemChanger.Tags.DisableItemPreviewTag>() ?? false) return;
             if (Target.HasTag<ItemChanger.Tags.DisableItemPreviewTag>()) return;
 
             Sprite sprite = Target.UIDef.GetSprite();
