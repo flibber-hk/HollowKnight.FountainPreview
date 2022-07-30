@@ -2,10 +2,12 @@
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using ItemChanger.Locations;
+using ItemChanger.Placements;
 using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Ref = ItemChanger.Internal.Ref;
 
 namespace FountainPreview
 {
@@ -14,7 +16,18 @@ namespace FountainPreview
         public static void Hook()
         {
             Finder.GetLocationOverride += OverrideFountainLocation;
+            Events.OnEnterGame += OverrideFountainLocation;
         }
+
+        private static void OverrideFountainLocation()
+        {
+            if (Ref.Settings.Placements.TryGetValue(LocationNames.Vessel_Fragment_Basin, out AbstractPlacement pmt)
+                && pmt is IPrimaryLocationPlacement locPmt)
+            {
+                locPmt.Location.GetOrAddTag<BasinVesselTag>();
+            }
+        }
+
         private static void OverrideFountainLocation(GetLocationEventArgs args)
         {
             if (args.LocationName != LocationNames.Vessel_Fragment_Basin)
@@ -26,8 +39,6 @@ namespace FountainPreview
             loc.AddTag<BasinVesselTag>();
             args.Current = loc;
         }
-
-
 
         [JsonIgnore] private AbstractLocation parent;
         [JsonIgnore] private AbstractItem Target => parent.Placement.Items.FirstOrDefault(x => !x.WasEverObtained());
