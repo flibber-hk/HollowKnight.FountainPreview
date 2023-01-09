@@ -13,6 +13,9 @@ namespace FountainPreview
 {
     public class BasinVesselTag : Tag
     {
+        // Remove tag when serialized to new profile, because we add the tag through the OnEnterGame event
+        public override TagHandlingFlags TagHandlingProperties => TagHandlingFlags.RemoveOnNewProfile;
+
         public static void Hook()
         {
             Finder.GetLocationOverride += OverrideFountainLocation;
